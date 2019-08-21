@@ -5,6 +5,12 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gummy", "Gummy\Gummy.vcxproj", "{5821C7F4-47F3-4847-BAAF-33194219A59C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{22D549BB-2D3D-4588-B9B6-D249838FA215}"
+	ProjectSection(SolutionItems) = preProject
+		Gummy\Driver.cpp = Gummy\Driver.cpp
+		Gummy\Gummy.h = Gummy\Gummy.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

@@ -20,11 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DenseNet.cpp" />
+    <ClCompile Include="Driver.cpp" />
     <ClCompile Include="Gummy.cpp" />
     <ClCompile Include="Matrix.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CSV.h" />
     <ClInclude Include="DenseNet.h" />
+    <ClInclude Include="Gummy.h" />
     <ClInclude Include="Matrix.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
