@@ -34,7 +34,7 @@ int main(){
 	std::cout << "Constructing sample Matrices 'm' and 'n'. 'm' with constructor and 'n' with '.construct'" << std::endl;
 	Matrix m(2, 3);
 	Matrix n;
-	n.construct(2, 3);
+	n.construct(3, 3);
 	std::cout << "m.print(): " << std::endl;
 	m.print();
 	std::cout << "n.print(): " << std::endl;
@@ -50,6 +50,13 @@ int main(){
 	n.construct(3, 2);
 	n.fillRandDouble(1, 2);
 	n.print();
+	std::cout << "Checking that multiplication is working as expected: " << std::endl;
+	m.print();
+	n.print();
+	Matrix result(2, 2);
+	m.multiply(&n, &result);
+	result.print();
+	std::cin.get();
 	for (int i = 0; i < 10; i++) {
 		{
 			Timer timer;
@@ -65,7 +72,7 @@ int main(){
 			Timer timer;
 			Matrix o(400, 500);
 			m.multiply(&n, &o);
-			std::wcout << "m*n = o" << std::endl;
+			std::wcout << "m*n = o" <<o.get(0,1)<< std::endl;
 		}
 	}
 #endif

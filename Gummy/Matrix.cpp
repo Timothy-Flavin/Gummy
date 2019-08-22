@@ -6,39 +6,37 @@
 Matrix::Matrix() {
 	m = 0;
 	n = 0;
-	matrix = NULL;
+	matrix = nullptr;
 	//srand(time(0));
 }
 Matrix::Matrix(int n1, int n2) {
 	m = n1;
 	n = n2;
 	//srand(time(0));
-	matrix = new double*[m];
+	matrix = new double[m*n];
 	for (int i = 0; i < m; i++) {
-		matrix[i] = new double[n];
 		for (int j = 0; j < n; j++)
-			matrix[i][j] = 0;
+			matrix[i*n+j] = 0.0;
 	}
 }
 void Matrix::construct(int n1, int n2) {
 	m = n1;
 	n = n2;
-	matrix = new double*[m];
+	matrix = new double[m*n];
 	for (int i = 0; i < m; i++) {
-		matrix[i] = new double[n];
 		for (int j = 0; j < n; j++)
-			matrix[i][j] = 0;
+			matrix[i*n+j] = 0;
 	}
 }
 void Matrix::fillRandInt(int min, int max) {
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
-			matrix[i][j] = rand() % (max - min) + min;
+			matrix[i*n+j] = rand() % (max - min) + min;
 }
 void Matrix::fillRandDouble(double min, double max) {
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
-			matrix[i][j] = (double)rand() / RAND_MAX *(max-min)+min;
+			matrix[i*n+j] = (double)rand() / RAND_MAX *(max-min)+min;
 }
 Matrix* Matrix::multiply(Matrix* A) {
 	Matrix *tempM = new Matrix(m, A->getN());
@@ -53,7 +51,7 @@ Matrix* Matrix::multiply(Matrix* A) {
 			for (int j = 0; j < A->getN(); j++) {
 				double val = 0;
 				for (int k = 0; k < n; k++) {
-					val += matrix[i][k] * A->get(k, j);
+					val += matrix[i*n+k] * A->get(k, j);
 				}
 				tempM->set(i, j, val);
 			}
@@ -73,36 +71,36 @@ void Matrix::multiply(Matrix* A, Matrix* B) {
 			for (int j = 0; j < A->getN(); j++) {
 				double val = 0;
 				for (int k = 0; k < n; k++) {
-					val += matrix[i][k] * A->get(k, j);
+					val += matrix[i*n+k] * A->get(k, j);
 				}
 				B->set(i, j, val);
 			}
 	}
 }
 Matrix::~Matrix() {
-	for(int i = 0; i<m; i++)
-		delete[] matrix[i];
+	//for(int i = 0; i<m; i++)
+		//delete[] matrix[i];
 	delete[] matrix;
 }
 Matrix* Matrix::multiply(double d) {
 	Matrix* tempM = new Matrix(m, n);
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
-			tempM->set(i, j, matrix[i][j] * d);
+			tempM->set(i, j, matrix[i*n+j] * d);
 	return tempM;
 }
 Matrix* Matrix::multiply(int n1) {
 	Matrix* tempM = new Matrix(m, n);
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
-			tempM->set(i, j, matrix[i][j] * n1);
+			tempM->set(i, j, matrix[i*n+j] * n1);
 	return tempM;
 }
 Matrix* Matrix::multiply(float f) {
 	Matrix* tempM = new Matrix(m, n);
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
-			tempM->set(i, j, matrix[i][j] * f);
+			tempM->set(i, j, matrix[i*n+j] * f);
 	return tempM;
 }
 Matrix* Matrix::add(Matrix* A) {
@@ -110,7 +108,7 @@ Matrix* Matrix::add(Matrix* A) {
 	if (m == A->getM() && n == A->getN()) {
 		for (int i = 0; i < m; i++)
 			for (int j = 0; j < n; j++)
-				tempM->set(i, j, matrix[i][j] + A->get(i, j));
+				tempM->set(i, j, matrix[i*n+j] + A->get(i, j));
 	}
 	else {
 		std::cout << "Not addable";
@@ -121,7 +119,7 @@ void Matrix::add(Matrix* A, Matrix* B) {
 	if (m == A->getM() && n == A->getN()) {
 		for (int i = 0; i < m; i++)
 			for (int j = 0; j < n; j++)
-				B->set(i, j, matrix[i][j] + A->get(i, j));
+				B->set(i, j, matrix[i*n+j] + A->get(i, j));
 	}
 	else {
 		std::cout << "Not addable";
@@ -138,8 +136,8 @@ void Matrix::print() {
 		for (int i = 0; i < m; i++) {
 			std::cout << std::endl;
 			for (int j = 0; j < n; j++)
-				if(matrix[i][j] != NULL)
-					std::cout << " " << matrix[i][j] << " ";
+				if(matrix[i*n+j] != NULL)
+					std::cout << " " << matrix[i*n+j] << " ";
 		}
 		std::cout << std::endl;
 	}

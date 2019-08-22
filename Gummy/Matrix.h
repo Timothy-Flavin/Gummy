@@ -3,7 +3,7 @@
 class Matrix {
 private:
 	int m, n;
-	double**matrix;
+	double*matrix;
 	bool isSquare = false;
 public:
 	Matrix();
@@ -21,8 +21,8 @@ public:
 	void add(Matrix *A, Matrix* B);
 	//Matrix inverse(Matrix A);
 	void print();
-	void set(int i, int j, double n) { matrix[i][j] = n; }
-	double get(int i, int j) { return matrix[i][j]; }
+	void set(int i, int j, double num) { matrix[i*n+j] = num; }
+	double get(int i, int j) { return matrix[i*n+j]; }
 	bool square() { return isSquare; }
 	int getN() { return n; }
 	int getM() { return m; }
