@@ -1,30 +1,10 @@
 #include "Gummy.h"
+#include "Timer.h"
 #include<string>
-#include<chrono>
 #define testMatrix
 #define testDenseNet
 #define testGummy
-class Timer {
-public:
-	Timer() {
-		m_StartTimepoint = std::chrono::high_resolution_clock::now();
-	}
-	~Timer() {
-		Stop();
-	}
-	void Stop() {
-		auto endTimePoint = std::chrono::high_resolution_clock::now();
-		auto start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
-		auto end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimePoint).time_since_epoch().count();
 
-		auto duration = end - start;
-		double ms = duration * 0.001;
-
-		std::cout << duration << "microseconds, " << ms << "milliseconds"<<std::endl;
-	}
-private:
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
-};
 int main(){
 
 	srand(time(0));
@@ -56,25 +36,36 @@ int main(){
 	Matrix result(2, 2);
 	m.multiply(&n, &result);
 	result.print();
+	std::cout << "Press enter to continue...";
 	std::cin.get();
 	for (int i = 0; i < 10; i++) {
 		{
 			Timer timer;
 			std::cout << "Testing matrix multiplication performance..." << std::endl;
-			m.construct(400, 600);
+			m.construct(100, 100*(i+1));
 			m.fillRandDouble(1, 5);
-			std::cout << "m constructed 400x600" << std::endl;
-			n.construct(600, 500);
+			std::cout << "m constructed 100x"<<i+1<<"00" << std::endl;
+			n.construct(100*(i+1), 100);
 			n.fillRandDouble(5, 10);
-			std::cout << "n constructed 600x500" << std::endl;
+			std::cout << "n constructed "<<i+1<<"00x100" << std::endl;
 		}
 		{
 			Timer timer;
-			Matrix o(400, 500);
+			Matrix o(100, 100);
 			m.multiply(&n, &o);
 			std::wcout << "m*n = o" <<o.get(0,1)<< std::endl;
 		}
 	}
+	std::cin.get();
+#endif
+#ifdef testDenseNet
+	std::cout << "testing Dense Net with test cases"<<std::endl;
+	Gummy gummy;
+	char* csvFileName = new char[20];
+	std::cout << "Enter test csv file name (t.csv): ";
+	std::cin.getline(csvFileName, 20);
+	gummy.readCSV(csvFileName);
+
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;
 	std::cin.get();

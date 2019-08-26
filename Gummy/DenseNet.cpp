@@ -1,5 +1,9 @@
 #include"DenseNet.h"
-//Creates a dense neural net with a number of layers "nl" and a pointer to an array or layer sizes "ll"
+/*Creates a dense neural net with a number of layers "nl" and a pointer to an 
+  array or layer sizes "ll". bool so decides whether the output is sigmoid (0-1)
+  or raw (Any double). nm is the name which the neural net will use when saving
+  itself to a file
+*/
 DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
 	sigmoidOutput = so;
 	if (nl < 2)
@@ -7,8 +11,11 @@ DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
 	numLayers = nl;
 	layerList = ll;
 	name = nm;
+	//matrix list of node values
 	activations = new Matrix[numLayers];
+	//weights matrix list between nodes
 	weights = new Matrix[numLayers - 1];
+	//matrix list of bias to be added
 	bias = new Matrix[numLayers - 1];
 	eWeights = new Matrix[numLayers - 1];
 	eBias = new Matrix[numLayers - 1];
@@ -28,6 +35,7 @@ DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
 		eActivation[i].construct(layerList[i], 1);
 	}
 }
+//given a csv file loads a dense net into ram for use. 
 DenseNet::DenseNet(csv* file){
 	std::cout<<"making new net from file";
 	name = file->name;
@@ -74,6 +82,10 @@ DenseNet::DenseNet(csv* file){
 		eActivation[i].construct(layerList[i], 1);
 	}
 }
+/*
+Forward pass algorithm for dense neural networks. Uses sigmoid gates
+*/
+
 Matrix* DenseNet::feedForward(Matrix* inputs) {
 	int numIns = inputs->getM();
 	for (int i = 0; i < numIns; i++) {
@@ -82,17 +94,9 @@ Matrix* DenseNet::feedForward(Matrix* inputs) {
 	for (int i = 0; i < numLayers - 1; i++) {
 		weights[i].multiply(&activations[i], &activations[i + 1]);
 		activations[i+1].add(&bias[i], &activations[i+1]);
-		//std::cout << "\n\n----pre sigmoid----:";
-		//activations[i + 1].print();
-		if (i == numLayers - 2 && !sigmoidOutput) {
-
-		}
-		else {
+		if (!(i == numLayers - 2) || sigmoidOutput) {
 			sigmoid(&activations[i + 1]);
 		}
-		//std::cout << "\n\n----post sigmoid----:";
-		//activations[i + 1].print();
-		//std::cout << "\n----DONE----:";
 	}
 	return &activations[numLayers-1];
 }
@@ -162,7 +166,6 @@ double DenseNet::calcError(Matrix* A) {
 }
 
 void DenseNet::sigmoid(Matrix* A) {
-	//std::cout << "sigmoid"; 
 	//derivative of sigmoid S() is S()*(1-S())
 	for (int i = 0; i < A->getM(); i++) {
 		A->set(i, 0, 1.0/(1.0+exp(-1*(A->get(i, 0)))));
@@ -203,7 +206,6 @@ void DenseNet::printGradient() {
 			std::cout << "eBias: " << i << std::endl;
 			eBias[i].print();
 		}
-
 	}
 	std::cout << "\n\n -------------END PRINT GRADIENT-------------\n\n";
 }

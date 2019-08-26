@@ -1,46 +1,23 @@
 #include"Gummy.h"
+#include"Timer.h"
 
 Gummy::Gummy(){
-	std::cout<<"constructing Gummy"<<std::endl;
-	//srand(time(0));
-	//csvFileName = new char[20];
-	std::cout << "\nChoose number of iterations to train: ";
-	std::cin >> numIterations;
-	std::cout << "\nChoose step size: ";
-	std::cin >> stepSize;
-	std::cout<< "\nput file into gummy.cpp folder and enter file name: ";
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	//std::cout<<"\ngetting file";
-	csvFileName = new char[20];
-	std::cin.getline(csvFileName, 20);
-	trainingData = readCSV(csvFileName);
-	csvToDouble(trainingData);
-	//std::cout<<"\ngot file";
+	setNetFileName(new char['t','e','s','t','N','e','t','.','t','x','t']);
+
 }
 
 csv* Gummy::readCSV(char* fileName) {
 	std::ifstream infile;
-	std::cout<<"file being read "<<fileName<<std::endl;
-	infile.open(fileName);
-	std::cout<<"opened file"<<std::endl;
 	int curLine = 0;
-	std::string dead = "";
-	while (std::getline(infile,dead)) {
-		curLine++;
-		//std::cout<<"why not working"<<std::endl;
-		//infile>>dead;
-		//std::cout<<infile.good()<<", got line "<<curLine<<", "<<dead<<std::endl;
-		/*if(infile.good()==0){
-			std::cout<<"done"<<std::endl;
-			break;
-		}*/
-	}
-	//std::cout << "line num: "<<curLine<<std::endl; //<< curLine;
-	infile.clear();
-	//std::cout<<"cleared"<<std::endl;
-	infile.seekg(0, std::ios::beg);
-	//std::cout<<"seeked 0"<<std::endl;
+	//C code
+	curLine = 0;
+	FILE *inffile = fopen(fileName, "r");
+	int ch;
+
+	while (EOF != (ch = getc(inffile)))
+		if ('\n' == ch)
+			++curLine;
+	//end C code
 	csv* file = new csv;
 	file->name = fileName;
 	file->numLines = curLine;
@@ -125,7 +102,7 @@ DenseNet* Gummy::userInit() {
 	//std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	netFileName = new char[20];
 	std::cin.getline(netFileName, 20);
-	std::cout << "\nWhat type of Neural net do you want?\n1: Dense, 2: Recurrent(NA), 3: convolutional\n";
+	std::cout << "\nWhat type of Neural net do you want?\n1: Dense, 2: Recurrent(NA), 3: convolutional(NA)\n";
 	std::cin >> type;
 	int numLayers = 0;
 	int*layerSizes=NULL;
@@ -149,7 +126,7 @@ DenseNet* Gummy::userInit() {
 	std::cout<<"FINISHED MAKING DENSE NET\n";
 	return net;
 }
-
+//Stochastic gradient descent
 void Gummy::train(DenseNet* net) {
 	std::cout<<"training net"<<std::endl;
 	int percentNum = 1;

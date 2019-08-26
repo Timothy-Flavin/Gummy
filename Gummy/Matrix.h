@@ -19,7 +19,6 @@ public:
 	Matrix* multiply(float f);
 	Matrix* add(Matrix *A);
 	void add(Matrix *A, Matrix* B);
-	//Matrix inverse(Matrix A);
 	void print();
 	void set(int i, int j, double num) { matrix[i*n+j] = num; }
 	double get(int i, int j) { return matrix[i*n+j]; }
