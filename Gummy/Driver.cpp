@@ -1,12 +1,14 @@
 #include "Gummy.h"
 #include "Timer.h"
 #include<string>
-#define testMatrix
+//#define testMatrix
 #define testDenseNet
-#define testGummy
-
+inline bool exists(const std::string& name) {
+	struct stat buffer;
+	return (stat(name.c_str(), &buffer) == 0);
+}
 int main(){
-
+	char yn = 'n';
 	srand(time(0));
 	std::cout<<"Default Driver debugging program, shows each part of Gummy working correctly comment out the parts you do not want to print"<<std::endl;
 
@@ -61,13 +63,64 @@ int main(){
 #ifdef testDenseNet
 	std::cout << "testing Dense Net with test cases"<<std::endl;
 	Gummy gummy;
+
 	char* csvFileName = new char[20];
+	char* netFileName = new char[20];
 	std::cout << "Enter test csv file name (t.csv): ";
 	std::cin.getline(csvFileName, 20);
-	gummy.readCSV(csvFileName);
-
+	bool fileError = exists(csvFileName);
+	if (!fileError) {
+		std::cout << "File does not exist fatal error, exiting program...";
+		std::cin.get();
+		return 0;
+	}
+	std::cout << "Enter test net file name: ";
+	std::cin.getline(netFileName, 20);
+	int type = 1, numLayers = 4;
+	int layerSizes[] = { 2, 3, 2, 1 };
+	std::cout << "creating a test neural net with 4 layers: 2, 3, 2, 1 and sigmoid output" << std::endl;
+	DenseNet tnet = *gummy.manualInit(csvFileName, netFileName, 1, numLayers, layerSizes, true);
+	std::cout << "print net matrices? (y/n)" << std::endl;
+	std::cin >> yn;
+	if (yn == 'y') {
+		tnet.print();
+	}
+	std::cout << "print gradient matrices? (y/n)" << std::endl;
+	std::cin >> yn;
+	if (yn == 'y') {
+		tnet.printGradient();
+	}
+	gummy.saveNet(&tnet);
+	fileError = exists(netFileName);
+	std::cout << "file exists: " << fileError;
+	if (!fileError) {
+		std::cout << "File does not exist fatal error, exiting program...";
+		std::cin.get();
+		return 0;
+	}
+	tnet = *gummy.loadNet(netFileName);
+	std::cout << "saved and re leaded test net" << std::endl;
+	std::cout << "print new net matrices? (y/n)" << std::endl;
+	std::cin >> yn;
+	if (yn == 'y') {
+		tnet.print();
+	}
+	std::cout << "print new gradient matrices? (y/n)" << std::endl;
+	std::cin >> yn;
+	if (yn == 'y') {
+		tnet.printGradient();
+	}
+	{
+		Timer timer;
+		gummy.updateTrainingData(true);
+		gummy.setNumIterations(500000);
+		gummy.setStepSize(0.05);
+		gummy.train(&tnet, 8);
+	}
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;
 	std::cin.get();
+	std::cin.get();
     return 0;
 }
+

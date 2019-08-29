@@ -7,7 +7,7 @@
 Matrix::Matrix() {
 	m = 0;
 	n = 0;
-	matrix = nullptr;
+	matrix = NULL;
 }
 //creates a matrix with n1 rows and n2 columns
 Matrix::Matrix(int n1, int n2) {

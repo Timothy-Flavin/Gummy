@@ -16,6 +16,7 @@ private:
 	Matrix* activations = NULL;
 	Matrix* eWeights = NULL;
 	Matrix* eBias = NULL;
+	Matrix* eBiasBuffer = NULL;
 	Matrix* eActivation = NULL;
 	double* errorList = NULL;
 	void sigmoid(Matrix* A);
@@ -25,7 +26,9 @@ public:
 	DenseNet(csv* file);
 	Matrix* feedForward(Matrix* inputs);
 	double calcError(Matrix* A);
-	void backProp(Matrix* feedback, double stepSize);
+	void backProp(Matrix* A, double stepSize);
+	void backPropOld(Matrix* A, double stepSize);
+	void updateWeights(double stepSize, int batchSize);
 	void print();
 	void printGradient();
 	int getNumInputs() { return layerList[0]; }

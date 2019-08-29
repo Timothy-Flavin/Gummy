@@ -19,6 +19,7 @@ DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
 	bias = new Matrix[numLayers - 1];
 	eWeights = new Matrix[numLayers - 1];
 	eBias = new Matrix[numLayers - 1];
+	eBiasBuffer = new Matrix[numLayers - 1];
 	eActivation = new Matrix[numLayers]; //can cut out first row if you want
 	for (int i = 0; i < numLayers-1; i++) {
 		weights[i].construct(layerList[i+1], layerList[i]);
@@ -29,6 +30,7 @@ DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
 		bias[i].construct(layerList[i+1], 1);
 		bias[i].fillRandDouble(-1, 1);
 		eBias[i].construct(layerList[i + 1], 1);
+		eBiasBuffer[i].construct(layerList[i + 1], 1);
 	}
 	for (int i = 0; i < numLayers; i++) {
 		activations[i].construct(layerList[i], 1);
@@ -54,8 +56,9 @@ DenseNet::DenseNet(csv* file){
 	bias = new Matrix[numLayers - 1];
 	eWeights = new Matrix[numLayers - 1];
 	eBias = new Matrix[numLayers - 1];
+	eBiasBuffer = new Matrix[numLayers - 1];
 	eActivation = new Matrix[numLayers];
-
+	//std::cout << "weights" << std::endl;
 	int currentRow = 1;
 	for (int i = 0; i < numLayers-1; i++) {
 		weights[i].construct(layerList[i+1], layerList[i]);
@@ -69,13 +72,17 @@ DenseNet::DenseNet(csv* file){
 		}
 		eWeights[i].construct(layerList[i + 1], layerList[i]);
 	}
+	//std::cout << "bias" << std::endl;
 	for (int i = 0; i < numLayers-1; i++) {
 		bias[i].construct(layerList[i+1], 1);
 		for(int r = 0; r < bias[i].getM(); r++){
 			bias[i].set(r,0,file->numData[currentRow][r]);
+			//std::cout << bias[i].get(r, 0) << ", ";
 		}
+		//std::cout << std::endl;
 		currentRow++;
 		eBias[i].construct(layerList[i + 1], 1);
+		eBiasBuffer[i].construct(layerList[i + 1], 1);
 	}
 	for (int i = 0; i < numLayers; i++) {
 		activations[i].construct(layerList[i], 1);
@@ -120,6 +127,96 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 	//std::cout << "\n-----ERROR SET, PERFORMING BACKPROP------\n";
 	for (int curLayer = numLayers - 2; curLayer >= 0; curLayer--) {
 		//std::cout << "\nsetting eBias for layer: " << curLayer << std::endl;
+		//std::cout << "-----------------layer----------------" << std::endl;
+		for (int i = 0; i < eBias[curLayer].getM(); i++) {
+			//std::cout << "eBiasBuffer m: " << eBiasBuffer->getM() << ", eBiasBuffer n: " << eBiasBuffer->getN() << ", i:" << i << std::endl;
+
+			if (curLayer == numLayers - 2 && !sigmoidOutput) {
+				//eBias[curLayer].set(i, 0, eBias[curLayer].get(i, 0) + eActivation[curLayer + 1].get(i, 0));
+				eBiasBuffer[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)); 
+				//std::cout << "before add not sigmoid" << std::endl;
+				
+				//make temp eBias then use it to set activations
+			}
+			else {
+				eBiasBuffer[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)*sigmoidPrime(activations[curLayer + 1].get(i, 0)));
+				//std::cout << "before add sigmoid" << std::endl;
+			}
+			
+		}
+		eBias[curLayer].add(&eBiasBuffer[curLayer], &eBias[curLayer]);
+		/*
+		std::cout << "eBias Buffer layer "<<curLayer << std::endl;
+		eBiasBuffer[curLayer].print();
+		std::cout << "eBias layer " << curLayer << std::endl;
+		eBias[curLayer].print();
+		std::cout << "\nsetting weights and prevActivations for layer: " << curLayer << std::endl;
+		*/
+		//weights column applied to previous activations row
+		for (int i = 0; i < eWeights[curLayer].getM(); i++) {
+			for (int j = 0; j < eWeights[curLayer].getN(); j++) {
+				//std::cout << "\nline 75"; ading the whole weights thing
+				eWeights[curLayer].set(i, j, eWeights[curLayer].get(i,j) + eBiasBuffer[curLayer].get(i,0) * activations[curLayer].get(j,0));
+				//std::cout << "\nline 77";
+				
+
+				//std::cout << eBiasBuffer[curLayer].get(i, 0) * activations[curLayer].get(j, 0) << ':' << eWeights[curLayer].get(i, j)<<',';
+				eActivation[curLayer].set(j, 0, eActivation[curLayer].get(j,0) + weights[curLayer].get(i, j) * eBiasBuffer[curLayer].get(i, 0));
+				//std::cout << "\nline 79";
+			}
+			//std::cout << std::endl;
+		}
+		//std::cout << "activations" << std::endl;
+		//activations[curLayer].print();
+		//std::cout << "Done with layer: " << curLayer << std::endl;
+	}
+	//double stepSize = 0.0005;
+	//std::cout << "\nE: " << error;
+	//std::cout << "-----DONE PERFORMING BACKPROP------" << std::endl;
+}
+void DenseNet::updateWeights(double stepSize, int batchSize) {
+	for (int l = 0; l < numLayers - 1; l++) {
+		for (int i = 0; i < weights[l].getM(); i++) {
+			for (int j = 0; j < weights[l].getN(); j++) {            //devide by batch size
+				weights[l].set(i, j, weights[l].get(i, j) - stepSize * (eWeights[l].get(i, j)/batchSize));
+			}
+		}
+		for (int i = 0; i < bias[l].getM(); i++) {
+			bias[l].set(i, 0, bias[l].get(i, 0) - stepSize * (eBias[l].get(i, 0)/batchSize));
+		}
+	}
+	for (int i = 0; i < numLayers - 1; i++) {
+		for (int m = 0; m < eWeights[i].getM(); m++) {
+			for (int n = 0; n < eWeights[i].getN(); n++) {
+				eWeights[i].set(m, n, 0.0);
+			}
+		}
+		//eWeights[i].print();
+		for (int m = 0; m < eBias[i].getM(); m++) {
+			eBias[i].set(m, 0, 0.0);
+		}
+		//eBias[i].print();
+	}
+}
+void DenseNet::backPropOld(Matrix* A, double stepSize) {
+	//error*S()*(1-S())
+	/*
+	1: set last row of eActivations through calcError
+	Loop for num layers{
+	2: set ebias with inverseSigmoid(activations[i]) * eActivation[i]
+	3: set each w[i] by corrisponding ebias[i]*activations[i] (row before the weights row)
+	4: set next eActivations via transpose multiply weights[i]*activations[i+1]
+	}
+	*/
+	//std::cout << "\n-----PRINTING BACK PROP DEBUG------\n";
+	for (int i = 0; i < numLayers; i++) {
+		for (int j = 0; j < eActivation[i].getM(); j++)
+			eActivation[i].set(j, 0, 0);
+	}
+	double error = calcError(A);
+	//std::cout << "\n-----ERROR SET, PERFORMING BACKPROP------\n";
+	for (int curLayer = numLayers - 2; curLayer >= 0; curLayer--) {
+		//std::cout << "\nsetting eBias for layer: " << curLayer << std::endl;
 		for (int i = 0; i < eBias[curLayer].getM(); i++) {
 			if (curLayer == numLayers - 2 && !sigmoidOutput) {
 				eBias[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0));
@@ -134,9 +231,9 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 		for (int i = 0; i < eWeights[curLayer].getM(); i++) {
 			for (int j = 0; j < eWeights[curLayer].getN(); j++) {
 				//std::cout << "\nline 75";
-				eWeights[curLayer].set(i, j, eBias[curLayer].get(i,0) * activations[curLayer].get(j,0));
+				eWeights[curLayer].set(i, j, eBias[curLayer].get(i, 0) * activations[curLayer].get(j, 0));
 				//std::cout << "\nline 77";
-				eActivation[curLayer].set(j, 0, eActivation[curLayer].get(j,0) + weights[curLayer].get(i, j) * eBias[curLayer].get(i, 0));
+				eActivation[curLayer].set(j, 0, eActivation[curLayer].get(j, 0) + weights[curLayer].get(i, j) * eBias[curLayer].get(i, 0));
 				//std::cout << "\nline 79";
 			}
 		}
@@ -145,7 +242,7 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 	for (int l = 0; l < numLayers - 1; l++) {
 		for (int i = 0; i < weights[l].getM(); i++) {
 			for (int j = 0; j < weights[l].getN(); j++) {
-				weights[l].set(i, j, weights[l].get(i, j) - stepSize*(eWeights[l].get(i, j)));
+				weights[l].set(i, j, weights[l].get(i, j) - stepSize * (eWeights[l].get(i, j)));
 			}
 		}
 		for (int i = 0; i < bias[l].getM(); i++) {
@@ -236,7 +333,7 @@ void DenseNet::save(){
 				if(j>0) outfile<<',';
 				outfile<<bias[i].get(j,0);
 			}
-			if(i < numLayers-2) outfile<<std::endl;
+			if(i < numLayers-1) outfile<<std::endl;
 		}
 		outfile.close();
 	} else{
