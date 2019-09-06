@@ -2,7 +2,7 @@
 #include "Timer.h"
 #include<string>
 //#define testMatrix
-#define testDenseNet
+//#define testDenseNet
 inline bool exists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -113,9 +113,9 @@ int main(){
 	{
 		Timer timer;
 		gummy.updateTrainingData(true);
-		gummy.setNumIterations(500000);
-		gummy.setStepSize(0.05);
-		gummy.train(&tnet, 8);
+		gummy.setNumIterations(200000);
+		gummy.setStepSize(1);
+		gummy.train(&tnet);
 	}
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;

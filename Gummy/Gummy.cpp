@@ -7,6 +7,7 @@ Gummy::Gummy(){
 }
 
 //make it take a split int n to split te file into n folds
+//read the first file 
 csv* Gummy::readCSV(char* fileName) {
 	
 	int curLine = 0;
@@ -136,7 +137,7 @@ DenseNet* Gummy::userInit() {
 }
 //Stochastic gradient descent
 void Gummy::train(DenseNet* net, int batchSize) {
-	int*rowNums = new int[batchSize];
+	//int*rowNums = new int[batchSize];
 	std::cout<<"training net"<<std::endl;
 	int percentNum = 1;
 	if (numIterations >= 100) {
@@ -144,25 +145,33 @@ void Gummy::train(DenseNet* net, int batchSize) {
 	}
 	std::cout<<"assigned percent "<<numIterations<<std::endl;
 	//net->print();
+	double* tempRow = nullptr;
+	int tailNum = trainingData->numLines;
 	int rowNum = 0;
 	int numIn = net->getNumInputs();
 	int numOut = net->getNumOutputs();
-	std::cout<<"got in and outputs"<<std::endl;
+	//std::cout<<"got in and outputs"<<std::endl;
 	Matrix* inputMatrix = new Matrix(numIn,1);
 	Matrix* outputMatrix = new Matrix(numOut,1);
 	Matrix* netOutput = new Matrix(numOut, 1);
 	//std::cout<<"made training matrices"<<std::endl;
 	for (int i = 0; i < numIterations; i++) {
 		for (int j = 0; j < batchSize; j++) {
-			rowNums[j] = rand() % trainingData->numLines;
-			//std::cout<<"picked a row"<<std::endl;
+			
+			//rowNum = rand() % tailNum; //trainingData->numLines - 
+			
+			rowNum = rand() % tailNum;
+			//std::cout<<"picked a row: "<<rowNum <<": "<< trainingData->numData[rowNum][0] << ", " << trainingData->numData[rowNum][1] << ", " << trainingData->numData[rowNum][2] << std::endl;
+			for(int k = 0; k < trainingData->numLines;k++)
+				//std::cout << trainingData->numData[k][0]<<", "<<trainingData->numData[k][1]<<", "<< trainingData->numData[k][2]<<std::endl;
+			//std::cout << std::endl;
 			for (int k = 0; k < numIn; k++) {
-				inputMatrix->set(k, 0, trainingData->numData[rowNums[j]][k]);
+				inputMatrix->set(k, 0, trainingData->numData[rowNum][k]);
 				//std::cout << trainingData->numData[rowNums[j]][k] << ',';
 			}
 			//std::cout << "output:";
 			for (int k = 0; k < numOut; k++) {
-				outputMatrix->set(k, 0, trainingData->numData[rowNums[j]][k + numIn]);
+				outputMatrix->set(k, 0, trainingData->numData[rowNum][k + numIn]);
 				//std::cout << trainingData->numData[rowNums[j]][k+numIn] << ',';
 			}
 			//std::cout << std::endl;
@@ -182,30 +191,44 @@ void Gummy::train(DenseNet* net, int batchSize) {
 			//std::cin.get();
 			//std::cin.get();
 			//std::cout<<"-----------------------back propped------------------"<<std::endl;
+			tailNum--;
+			tempRow = trainingData->numData[rowNum];
+			trainingData->numData[rowNum] = trainingData->numData[tailNum];
+			trainingData->numData[tailNum] = tempRow;
+			if (tailNum == 0) {
+				tailNum = trainingData->numLines;
+			}
+					   //we picked a randome legal row num, at the end of the
+					   //training loop we must swap the data at row num and
+					   //the data at tail num
 
 		}
 		//std::cout << "------------------------END BATCH-------------------"<<std::endl;
-		net->updateWeights(stepSize, batchSize);
 		if (i%percentNum == 0) {
-			int errorBatchSize = 100;
-			std::cout << "percent done: " << i / percentNum<<"%\n";
-			
-			int randomEntry = rand()%trainingData->numLines;
+			//int errorBatchSize = 100;
+			std::cout << "avg error for this batch: " << net->getError() / batchSize << std::endl;
+			std::cout << "percent done: " << i / percentNum << "%\n";
+
+
+			/*int randomEntry = rand()%trainingData->numLines;
 			double error = 0;
 			for(int rowNum = 0; rowNum < errorBatchSize; rowNum++){
-				randomEntry = rand()%trainingData->numLines;
-				for(int j = 0; j < numIn; j++){
-					inputMatrix->set(j,0,trainingData->numData[randomEntry][j]);
-				}
-				for(int j = 0; j < numOut; j++){
-					outputMatrix->set(j,0,trainingData->numData[randomEntry][j+numIn]);
-				}
-				net->feedForward(inputMatrix);
-				error+=net->calcError(outputMatrix);
+			randomEntry = rand()%trainingData->numLines;
+			for(int j = 0; j < numIn; j++){
+			inputMatrix->set(j,0,trainingData->numData[randomEntry][j]);
+			}
+			for(int j = 0; j < numOut; j++){
+			outputMatrix->set(j,0,trainingData->numData[randomEntry][j+numIn]);
+			}
+			net->feedForward(inputMatrix);
+			error+=net->calcError(outputMatrix);
 			}
 			std::cout<<"error: "<<error/ errorBatchSize <<" batch size = "<<errorBatchSize<<std::endl;
-			
+			*/
 		}
+		net->updateWeights(stepSize, batchSize);
+
+		
 	}
 	for(int i = 0; i < 5; i++){
 		rowNum = rand() % trainingData->numLines;
@@ -228,8 +251,12 @@ void Gummy::train(DenseNet* net, int batchSize) {
 		}
 		std::cout<<std::endl;
 	}
-	delete[] rowNums;
-	rowNums = 0;
+	//delete[] rowNums;
+	//rowNums = 0;
+}
+
+void Gummy::train(DenseNet* net) {
+	train(net, trainingData->numLines);
 }
 
 void Gummy::saveNet(DenseNet* net){

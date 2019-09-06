@@ -123,7 +123,7 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 		for (int j = 0; j < eActivation[i].getM(); j++)
 			eActivation[i].set(j, 0, 0);
 	}
-	double error = calcError(A);
+	totalError += calcError(A);
 	//std::cout << "\n-----ERROR SET, PERFORMING BACKPROP------\n";
 	for (int curLayer = numLayers - 2; curLayer >= 0; curLayer--) {
 		//std::cout << "\nsetting eBias for layer: " << curLayer << std::endl;
@@ -197,6 +197,7 @@ void DenseNet::updateWeights(double stepSize, int batchSize) {
 		}
 		//eBias[i].print();
 	}
+	totalError = 0;
 }
 void DenseNet::backPropOld(Matrix* A, double stepSize) {
 	//error*S()*(1-S())
@@ -213,7 +214,7 @@ void DenseNet::backPropOld(Matrix* A, double stepSize) {
 		for (int j = 0; j < eActivation[i].getM(); j++)
 			eActivation[i].set(j, 0, 0);
 	}
-	double error = calcError(A);
+	totalError += calcError(A);
 	//std::cout << "\n-----ERROR SET, PERFORMING BACKPROP------\n";
 	for (int curLayer = numLayers - 2; curLayer >= 0; curLayer--) {
 		//std::cout << "\nsetting eBias for layer: " << curLayer << std::endl;
@@ -251,7 +252,6 @@ void DenseNet::backPropOld(Matrix* A, double stepSize) {
 	}
 	//std::cout << "\nE: " << error;
 }
-
 double DenseNet::calcError(Matrix* A) {
 	double error = 0;
 	for (int i = 0; i < layerList[numLayers-1]; i++) {
@@ -261,18 +261,15 @@ double DenseNet::calcError(Matrix* A) {
 	}
 	return error;
 }
-
 void DenseNet::sigmoid(Matrix* A) {
 	//derivative of sigmoid S() is S()*(1-S())
 	for (int i = 0; i < A->getM(); i++) {
 		A->set(i, 0, 1.0/(1.0+exp(-1*(A->get(i, 0)))));
 	}
 }
-
 double DenseNet::sigmoidPrime(double a) {
 	return a * (1 - a);
 }
-
 void DenseNet::print() {
 	std::cout<<"will this print"<<std::endl;
 	std::cout << "\n\n ----------PRINTING A DENSE NET----------"<<std::endl;
@@ -291,7 +288,6 @@ void DenseNet::print() {
 	}
 	std::cout << "\n\n -------------END PRINT DENSE NET-------------\n\n";
 }
-
 void DenseNet::printGradient() {
 	std::cout << "\n\n ----------PRINTING GRADIENT----------\n\n";
 	for (int i = 0; i < numLayers; i++) {
@@ -306,7 +302,6 @@ void DenseNet::printGradient() {
 	}
 	std::cout << "\n\n -------------END PRINT GRADIENT-------------\n\n";
 }
-
 void DenseNet::save(){
 	std::cout<<"saving net"<<std::endl;
 	std::ofstream outfile;
@@ -340,7 +335,6 @@ void DenseNet::save(){
 		std::cout<<"ERROR could not open/create file"<<std::endl;
 	}
 }
-
 void DenseNet::setName(char* nm){
 	name = nm;
 }

@@ -21,6 +21,7 @@ class Gummy {
         DenseNet* userInit();
         DenseNet* manualInit(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid);
         void train(DenseNet* net, int batchSize);
+		void train(DenseNet* net);
         void saveNet(DenseNet* net);
         DenseNet* loadNet(char* fileName);
         void setNetFileName(char* nfn){netFileName = nfn;}

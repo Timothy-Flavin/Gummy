@@ -6,7 +6,8 @@
 #include<cmath>
 
 class DenseNet {
-private:
+protected:
+	double totalError=0;
     char* name = NULL;
 	bool sigmoidOutput = true;
 	int numLayers = NULL;
@@ -26,6 +27,7 @@ public:
 	DenseNet(csv* file);
 	Matrix* feedForward(Matrix* inputs);
 	double calcError(Matrix* A);
+	double getError() { return totalError; }
 	void backProp(Matrix* A, double stepSize);
 	void backPropOld(Matrix* A, double stepSize);
 	void updateWeights(double stepSize, int batchSize);
