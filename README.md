@@ -6,10 +6,10 @@ depth on long tearm learning of patterns using recurrent neural networks. Develo
 on Gummy will slow during the school year as it is not priority.
 
 # Intended additions:
-Recurrent networks with user set structure in recurrent and feed forward depth with
-a generalized truncated backpropegation through time algorithm in order to allow for
+Recurrent networks with a user set structure in recurrent and feed forward depth.
+A generalized truncated backpropegation through time algorithm in order to allow for
 expirimentation with different recurrent structures. Eventually a genetic algorithm 
-for this expirimentation is the goal to compete with the NEAT algorithms currently used.
+for this expirimentation is the goal to compete with the NEAT and LSTM algorithms currently used.
 
 ### Deep Q learning
 ### NEAT algoritm
