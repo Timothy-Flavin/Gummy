@@ -92,7 +92,9 @@ DenseNet::DenseNet(csv* file){
 /*
 Forward pass algorithm for dense neural networks. Uses sigmoid gates
 */
+DenseNet::DenseNet() {
 
+}
 Matrix* DenseNet::feedForward(Matrix* inputs) {
 	int numIns = inputs->getM();
 	for (int i = 0; i < numIns; i++) {

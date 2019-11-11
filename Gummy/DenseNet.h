@@ -22,6 +22,7 @@ protected:
 	double* errorList = NULL;
 	void sigmoid(Matrix* A);
 	double sigmoidPrime(double a);
+	DenseNet();
 public:
 	DenseNet(int nl, int*ll, bool so, char* nm);
 	DenseNet(csv* file);

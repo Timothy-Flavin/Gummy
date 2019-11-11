@@ -3,6 +3,7 @@
 #include<string>
 //#define testMatrix
 //#define testDenseNet
+#define testRecurrentNet
 inline bool exists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -79,7 +80,7 @@ int main(){
 	int type = 1, numLayers = 4;
 	int layerSizes[] = { 2, 3, 2, 1 };
 	std::cout << "creating a test neural net with 4 layers: 2, 3, 2, 1 and sigmoid output" << std::endl;
-	DenseNet tnet = *gummy.manualInit(csvFileName, netFileName, 1, numLayers, layerSizes, true);
+	DenseNet tnet = *gummy.manualInitDense(csvFileName, netFileName, 1, numLayers, layerSizes, true);
 	std::cout << "print net matrices? (y/n)" << std::endl;
 	std::cin >> yn;
 	if (yn == 'y') {
@@ -117,6 +118,10 @@ int main(){
 		gummy.setStepSize(1);
 		gummy.train(&tnet);
 	}
+#endif
+
+#ifdef testRecurrentNet
+	std::cout << "Testing recurrent net with test cases" << std::endl;
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;
 	std::cin.get();

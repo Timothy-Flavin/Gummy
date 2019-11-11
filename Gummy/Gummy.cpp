@@ -98,7 +98,7 @@ void Gummy::csvToDouble(csv* file) {
 	}
 }
 
-DenseNet* Gummy::manualInit(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid){
+DenseNet* Gummy::manualInitDense(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid){
 	csvFileName = fileName;
 	type = ntype;
 	netFileName=nFileName;

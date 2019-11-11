@@ -23,6 +23,7 @@
     <ClCompile Include="Driver.cpp" />
     <ClCompile Include="Gummy.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="RecurrentNet.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,7 @@
     <ClInclude Include="DenseNet.h" />
     <ClInclude Include="Gummy.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="RecurrentNet.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
