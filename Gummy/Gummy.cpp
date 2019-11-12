@@ -110,8 +110,8 @@ RecurrentNet* Gummy::manualInitRecurrent(char* fileName, char* nFileName, int nu
 	return new RecurrentNet(numLayers, layerSizes, sigmoid, nFileName, relations, numRelations, truncNum);
 	//RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** relations, int numRelations, int truncNum);
 }
-DenseNet* Gummy::userInit() {
-	DenseNet* net;
+NeuralNetwork* Gummy::userInit() {
+	NeuralNetwork* net;
 	std::cout<< "\nEnter the file name to save your net: ";
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -141,14 +141,19 @@ DenseNet* Gummy::userInit() {
 		std::cin >> numRelations;
 		recurrentRelation** relations = new recurrentRelation*[numRelations];
 		for (int i = 0; i < numRelations; i++) {
+			relations[i] = new recurrentRelation;
 			std::cout << "What do you want to be the input layer number of relation " << i;
 			std::cin >> relations[i]->inputLayer;
 			std::cout << "What do you want to be the output layer number of relation " << i;
 			std::cin >> relations[i]->outputLayer;
+			std::cout << "What recurrent depth do you want in timesteps for relation " << i;
+			std::cin >> relations[i]->timeDistance;
 		}
 		std::cout << "How many timesteps do you want truncated BBTT to remember?";
 		std::cin >> truncNum;
 		net = new RecurrentNet(numLayers, layerSizes, sigmoidOutput, netFileName, relations, numRelations, truncNum);
+		//std::cout << "Testing print relations in gummy" << std::endl;
+		//net->printRelations();
 	}
 	else {
 		net = new DenseNet(numLayers, layerSizes, sigmoidOutput, netFileName);

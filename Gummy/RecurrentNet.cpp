@@ -23,7 +23,7 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation*
 	numRelations = numrltns;
 	truncNum = tNum;
 																																			 //relations are a ** so each one points to a pointer to a matrix so that they can be easily sorted
-	sortRelations(relations, numRelations);
+	sortRelations();//relations, numRelations);
 	//constructing matrices for relations and allocating memory for activation history
 	activationHistory = new Matrix*[numRelations];
 	for (int i = 0; i < numRelations; i++) {
@@ -42,7 +42,7 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation*
 	std::cout << "FINISHED CONSTRUCTING RECURRENT NETWORK";
 }
 
-void RecurrentNet::sortRelations(recurrentRelation** relations, int numRelations) {
+void RecurrentNet::sortRelations(){//recurrentRelation** relations, int numRelations) {
 	recurrentRelation* tempRelation = nullptr;
 	for (int i = 0; i < numRelations-1; i++) {
 		for (int j = 0; j < numRelations - i - 1; j++) {
@@ -55,7 +55,7 @@ void RecurrentNet::sortRelations(recurrentRelation** relations, int numRelations
 	}
 }
 
-void RecurrentNet::printRelations(recurrentRelation** relations, int numRelations) {
+void RecurrentNet::printRelations(){//recurrentRelation** relations, int numRelations) {
 	for (int i = 0; i < numRelations; i++) {
 		std::cout << "Relation " << i << std::endl << "Input Layer: " << relations[i]->inputLayer << std::endl;
 		std::cout << "Output Layer: " << relations[i]->outputLayer << std::endl;
@@ -133,7 +133,7 @@ void RecurrentNet::updateWeights(double stepSize, int batchSize){
 }
 void RecurrentNet::print(){
 	print();
-	printRelations(relations, numRelations);
+	printRelations();
 }
 void RecurrentNet::printGradient(){
 }

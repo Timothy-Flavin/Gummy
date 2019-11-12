@@ -36,8 +36,8 @@ public:
 	virtual void backPropOld(Matrix* A, double stepSize);
 	virtual void updateWeights(double stepSize, int batchSize);
 	
-	virtual void sortRelations(recurrentRelation** relations, int numRelations);
-	virtual void printRelations(recurrentRelation** relations, int numRelations);
+	virtual void sortRelations();//recurrentRelation** relations, int numRelations);
+	virtual void printRelations();//recurrentRelation** relations, int numRelations);
 	
 	virtual void print();
 	virtual void printGradient();

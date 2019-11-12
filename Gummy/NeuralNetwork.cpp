@@ -7,7 +7,7 @@ itself to a file
 
 //given a csv file loads a dense net into ram for use.
 NeuralNetwork::NeuralNetwork() {
-	std::cout << "made a default net" << std::endl;
+	std::cout << "made a virtual default Neural Net" << std::endl;
 }
 
 Matrix* NeuralNetwork::feedForward(Matrix* inputs) {
@@ -47,9 +47,9 @@ void NeuralNetwork::save() {
 void NeuralNetwork::setName(char* nm) {
 	std::cout << "This is the virtual setName in NeuralNetwork" << std::endl;
 }
-void NeuralNetwork::sortRelations(recurrentRelation** relations, int numRelations) {
+void NeuralNetwork::sortRelations(){//recurrentRelation** relations, int numRelations) {
 	std::cout << "This is the virtual SortRelations in NeuralNetwork" << std::endl;
 }
-void NeuralNetwork::printRelations(recurrentRelation** relations, int numRelations) {
+void NeuralNetwork::printRelations(){//recurrentRelation** relations, int numRelations) {
 	std::cout << "This is the virtual printRelations in NeuralNetwork" << std::endl;
 }

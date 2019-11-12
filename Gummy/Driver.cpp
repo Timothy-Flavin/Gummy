@@ -2,8 +2,8 @@
 #include "Timer.h"
 #include<string>
 //#define testMatrix
-#define testDenseNet
-//#define testRecurrentNet
+//#define testDenseNet
+#define testRecurrentNet
 inline bool exists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -133,7 +133,8 @@ int main(){
 		std::cin.get();
 		return 0;
 	}
-	DenseNet* testNet = gummy.userInit(); //This net is recurrent and can be checked by it's type number
+	gummy.setCsvFileName(csvFileName);
+	NeuralNetwork* testNet = gummy.userInit(); //This net is recurrent and can be checked by it's type number
 	testNet->printRelations();
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;

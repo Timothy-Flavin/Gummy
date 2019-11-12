@@ -46,8 +46,8 @@ public:
 	void backProp(Matrix* A, double stepSize);
 	//void backPropOld(Matrix* A, double stepSize);
 	void updateWeights(double stepSize, int batchSize);
-	void sortRelations(recurrentRelation** relations, int numRelations);
-	void printRelations(recurrentRelation** relations, int numRelations);
+	void sortRelations();//recurrentRelation** relations, int numRelations);
+	void printRelations();//recurrentRelation** relations, int numRelations);
 	void print();
 	void printGradient();
 	//int getNumInputs() { return layerList[0]; }

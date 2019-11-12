@@ -21,7 +21,7 @@ class Gummy {
         char* csvFileName;
     public:
         Gummy();
-        DenseNet* userInit();
+        NeuralNetwork* userInit();
         DenseNet* manualInitDense(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid);
 		RecurrentNet* manualInitRecurrent(char* fileName, char* nFileName, int numLayers, int* layerSizes, bool sigmoid, recurrentRelation** relations, int numRelations, int truncNum);
         void train(NeuralNetwork* net, int batchSize);
