@@ -168,7 +168,7 @@ DenseNet* Gummy::userInit() {
 	return net;
 }
 //Stochastic gradient descent
-void Gummy::train(DenseNet* net, int batchSize) {
+void Gummy::train(NeuralNetwork* net, int batchSize) {
 	//int*rowNums = new int[batchSize];
 	std::cout<<"training net"<<std::endl;
 	int percentNum = 1;
@@ -287,11 +287,11 @@ void Gummy::train(DenseNet* net, int batchSize) {
 	//rowNums = 0;
 }
 
-void Gummy::train(DenseNet* net) {
+void Gummy::train(NeuralNetwork* net) {
 	train(net, trainingData->numLines);
 }
 
-void Gummy::saveNet(DenseNet* net){
+void Gummy::saveNet(NeuralNetwork* net){
 	net->save();
 }
 

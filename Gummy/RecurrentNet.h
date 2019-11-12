@@ -1,12 +1,13 @@
 #pragma once
 #include"RecurrentRelation.h"
 #include"DenseNet.h"
+#include"NeuralNetwork.h"
 #include"Matrix.h"
 #include"CSV.h"
 #include<iostream>
 #include<fstream>
 #include<cmath>
-class RecurrentNet : public DenseNet {
+class RecurrentNet : public DenseNet{
 protected:
 	Matrix tWeight = Matrix();
 	Matrix etWeight = Matrix();

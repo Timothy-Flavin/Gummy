@@ -7,6 +7,7 @@
 #include"Matrix.h"
 #include"DenseNet.h"
 #include"RecurrentNet.h"
+#include"NeuralNetwork.h"
 #include"CSV.h"
 #include"RecurrentRelation.h"
 
@@ -23,9 +24,9 @@ class Gummy {
         DenseNet* userInit();
         DenseNet* manualInitDense(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid);
 		RecurrentNet* manualInitRecurrent(char* fileName, char* nFileName, int numLayers, int* layerSizes, bool sigmoid, recurrentRelation** relations, int numRelations, int truncNum);
-        void train(DenseNet* net, int batchSize);
-		void train(DenseNet* net);
-        void saveNet(DenseNet* net);
+        void train(NeuralNetwork* net, int batchSize);
+		void train(NeuralNetwork* net);
+        void saveNet(NeuralNetwork* net);
         DenseNet* loadNet(char* fileName);
         void setNetFileName(char* nfn){netFileName = nfn;}
         void setCsvFileName(char* cfn){csvFileName = cfn;}

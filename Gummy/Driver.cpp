@@ -2,8 +2,8 @@
 #include "Timer.h"
 #include<string>
 //#define testMatrix
-//#define testDenseNet
-#define testRecurrentNet
+#define testDenseNet
+//#define testRecurrentNet
 inline bool exists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -80,18 +80,18 @@ int main(){
 	int type = 1, numLayers = 4;
 	int layerSizes[] = { 2, 3, 2, 1 };
 	std::cout << "creating a test neural net with 4 layers: 2, 3, 2, 1 and sigmoid output" << std::endl;
-	DenseNet tnet = *gummy.manualInitDense(csvFileName, netFileName, 1, numLayers, layerSizes, true);
+	NeuralNetwork* tnet = gummy.manualInitDense(csvFileName, netFileName, 1, numLayers, layerSizes, true);
 	std::cout << "print net matrices? (y/n)" << std::endl;
 	std::cin >> yn;
 	if (yn == 'y') {
-		tnet.print();
+		tnet->print();
 	}
 	std::cout << "print gradient matrices? (y/n)" << std::endl;
 	std::cin >> yn;
 	if (yn == 'y') {
-		tnet.printGradient();
+		tnet->printGradient();
 	}
-	gummy.saveNet(&tnet);
+	gummy.saveNet(tnet);
 	fileError = exists(netFileName);
 	std::cout << "file exists: " << fileError;
 	if (!fileError) {
@@ -99,24 +99,24 @@ int main(){
 		std::cin.get();
 		return 0;
 	}
-	tnet = *gummy.loadNet(netFileName);
+	tnet = gummy.loadNet(netFileName);
 	std::cout << "saved and re leaded test net" << std::endl;
 	std::cout << "print new net matrices? (y/n)" << std::endl;
 	std::cin >> yn;
 	if (yn == 'y') {
-		tnet.print();
+		tnet->print();
 	}
 	std::cout << "print new gradient matrices? (y/n)" << std::endl;
 	std::cin >> yn;
 	if (yn == 'y') {
-		tnet.printGradient();
+		tnet->printGradient();
 	}
 	{
 		Timer timer;
 		gummy.updateTrainingData(true);
 		gummy.setNumIterations(200000);
 		gummy.setStepSize(1);
-		gummy.train(&tnet);
+		gummy.train(tnet);
 	}
 #endif
 

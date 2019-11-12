@@ -4,22 +4,10 @@
 #include<iostream>
 #include<fstream>
 #include<cmath>
+#include"NeuralNetwork.h"
 
-class DenseNet {
+class DenseNet : public NeuralNetwork {
 protected:
-	double totalError=0;
-    char* name = NULL;
-	bool sigmoidOutput = true;
-	int numLayers = NULL;
-	int*layerList = NULL;
-	Matrix* weights = NULL;
-	Matrix* bias = NULL;
-	Matrix* activations = NULL;
-	Matrix* eWeights = NULL;
-	Matrix* eBias = NULL;
-	Matrix* eBiasBuffer = NULL;
-	Matrix* eActivation = NULL;
-	double* errorList = NULL;
 	void sigmoid(Matrix* A);
 	double sigmoidPrime(double a);
 	DenseNet();

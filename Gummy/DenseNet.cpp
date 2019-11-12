@@ -4,7 +4,7 @@
   or raw (Any double). nm is the name which the neural net will use when saving
   itself to a file
 */
-DenseNet::DenseNet(int nl, int*ll, bool so, char* nm) {
+DenseNet::DenseNet(int nl, int*ll, bool so, char* nm):NeuralNetwork() {
 	sigmoidOutput = so;
 	if (nl < 2)
 		std::cout << "Need at least an input layer and output layer";

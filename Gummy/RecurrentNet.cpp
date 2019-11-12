@@ -5,6 +5,7 @@
 
 */
 RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, int riln, int roln, int truncNum):DenseNet(nl, ll, so, nm) { //one relation, depricated
+	//jerry = 5;
 	tWeight.construct(layerList[roln],layerList[riln]);
 	etWeight.construct(layerList[roln], layerList[riln]);
 	etWeightBuffer.construct(layerList[roln], layerList[riln]);
@@ -17,7 +18,7 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, int riln, int roln
 	}
 	*/ 
 }
-RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** rltns, int numrltns, int tNum) :DenseNet(nl, ll, so, nm) { //multiple relations
+RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** rltns, int numrltns, int tNum):DenseNet(nl, ll, so, nm) { //multiple relations
 	relations = rltns;
 	numRelations = numrltns;
 	truncNum = tNum;
@@ -131,7 +132,7 @@ void RecurrentNet::backProp(Matrix* A, double stepSize){
 void RecurrentNet::updateWeights(double stepSize, int batchSize){
 }
 void RecurrentNet::print(){
-	DenseNet::print();
+	print();
 	printRelations(relations, numRelations);
 }
 void RecurrentNet::printGradient(){
