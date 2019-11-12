@@ -17,9 +17,11 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, int riln, int roln
 	}
 	*/ 
 }
-RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** relations, int numRelations, int truncNum):DenseNet(nl, ll, so, nm) { //multiple relations
-	
-	//relations are a ** so each one points to a pointer to a matrix so that they can be easily sorted
+RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** rltns, int numrltns, int tNum) :DenseNet(nl, ll, so, nm) { //multiple relations
+	relations = rltns;
+	numRelations = numrltns;
+	truncNum = tNum;
+																																			 //relations are a ** so each one points to a pointer to a matrix so that they can be easily sorted
 	sortRelations(relations, numRelations);
 	//constructing matrices for relations and allocating memory for activation history
 	activationHistory = new Matrix*[numRelations];
@@ -36,7 +38,7 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation*
 		}
 	}
 
-
+	std::cout << "FINISHED CONSTRUCTING RECURRENT NETWORK";
 }
 
 void RecurrentNet::sortRelations(recurrentRelation** relations, int numRelations) {
@@ -129,6 +131,8 @@ void RecurrentNet::backProp(Matrix* A, double stepSize){
 void RecurrentNet::updateWeights(double stepSize, int batchSize){
 }
 void RecurrentNet::print(){
+	DenseNet::print();
+	printRelations(relations, numRelations);
 }
 void RecurrentNet::printGradient(){
 }

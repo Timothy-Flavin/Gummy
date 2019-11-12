@@ -6,6 +6,7 @@
 #include<cmath>
 #include"Matrix.h"
 #include"DenseNet.h"
+#include"RecurrentNet.h"
 #include"CSV.h"
 #include"RecurrentRelation.h"
 
@@ -21,6 +22,7 @@ class Gummy {
         Gummy();
         DenseNet* userInit();
         DenseNet* manualInitDense(char* fileName, char* nFileName, int ntype, int numLayers, int* layerSizes, bool sigmoid);
+		RecurrentNet* manualInitRecurrent(char* fileName, char* nFileName, int numLayers, int* layerSizes, bool sigmoid, recurrentRelation** relations, int numRelations, int truncNum);
         void train(DenseNet* net, int batchSize);
 		void train(DenseNet* net);
         void saveNet(DenseNet* net);

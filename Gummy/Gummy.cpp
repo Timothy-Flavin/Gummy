@@ -104,14 +104,21 @@ DenseNet* Gummy::manualInitDense(char* fileName, char* nFileName, int ntype, int
 	netFileName=nFileName;
 	return new DenseNet(numLayers, layerSizes, sigmoid, netFileName);
 }
+RecurrentNet* Gummy::manualInitRecurrent(char* fileName, char* nFileName, int numLayers, int* layerSizes, bool sigmoid, recurrentRelation** relations, int numRelations, int truncNum) {
+	csvFileName = fileName;
+	netFileName = nFileName;
+	return new RecurrentNet(numLayers, layerSizes, sigmoid, nFileName, relations, numRelations, truncNum);
+	//RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** relations, int numRelations, int truncNum);
+}
 DenseNet* Gummy::userInit() {
+	DenseNet* net;
 	std::cout<< "\nEnter the file name to save your net: ";
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	//std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	netFileName = new char[20];
 	std::cin.getline(netFileName, 20);
-	std::cout << "\nWhat type of Neural net do you want?\n1: Dense, 2: Recurrent(NA), 3: convolutional(NA)\n";
+	std::cout << "\nWhat type of Neural net do you want?\n1: Dense, 2: Recurrent(inProgress), 3: convolutional(NA)\n";
 	std::cin >> type;
 	int numLayers = 0;
 	int*layerSizes=NULL;
@@ -119,19 +126,44 @@ DenseNet* Gummy::userInit() {
 	std::cout << "\nHow many layers do you want?\n";
 	std::cin >> numLayers;
 	layerSizes = new int[numLayers];
-	std::cout << "number of nodes in layer 0 and last layer must \nadd up to number of values in csv file\n";
+	std::cout << "number of nodes in layer 0 and last layer must \nadd up to number of values in each row of csv file\n";
 	for (int i = 0; i < numLayers; i++) {
 		std::cout << "how many nodes in layer " << i << std::endl;
 		std::cin >> layerSizes[i];
 	}
-	std::cout << "\nChoose output mode: 1: sigmoid, 0: raw\n";
+	std::cout << "\nChoose output mode: 1: sigmoid(more gate options coming), 0: raw\n";
 	std::cin >> sigmoidOutput;
-	std::cout<<"FINISHED GATHERING DATA\n"<<csvFileName<<std::endl;
-	DenseNet* net = new DenseNet(numLayers, layerSizes, sigmoidOutput, netFileName);
+
+	if (type == 2) {
+		//RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation** relations, int numRelations, int truncNum) :DenseNet(nl, ll, so, nm) { //multiple relations
+		int numRelations, truncNum;
+		std::cout << "how many recurrent relations do you want in your network?";
+		std::cin >> numRelations;
+		recurrentRelation** relations = new recurrentRelation*[numRelations];
+		for (int i = 0; i < numRelations; i++) {
+			std::cout << "What do you want to be the input layer number of relation " << i;
+			std::cin >> relations[i]->inputLayer;
+			std::cout << "What do you want to be the output layer number of relation " << i;
+			std::cin >> relations[i]->outputLayer;
+		}
+		std::cout << "How many timesteps do you want truncated BBTT to remember?";
+		std::cin >> truncNum;
+		net = new RecurrentNet(numLayers, layerSizes, sigmoidOutput, netFileName, relations, numRelations, truncNum);
+	}
+	else {
+		net = new DenseNet(numLayers, layerSizes, sigmoidOutput, netFileName);
+	}
+	std::cout << "FINISHED GATHERING DATA\n" << csvFileName << std::endl;
+
 	//net->print();
-	std::cout<<"reading file"<<std::endl;
-	trainingData = readCSV(csvFileName);
-	csvToDouble(trainingData);
+	char traininginit = 'f';
+	std::cout << "Would you like to initialize csv data here? ";
+	std::cin >> traininginit;
+	if (traininginit == 'y' || traininginit == 'Y' || traininginit == 't' || traininginit == 'T') {
+		std::cout << "reading file" << std::endl;
+		trainingData = readCSV(csvFileName);
+		csvToDouble(trainingData);
+	}
 	std::cout<<"FINISHED MAKING DENSE NET\n";
 	return net;
 }

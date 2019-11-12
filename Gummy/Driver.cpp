@@ -122,6 +122,19 @@ int main(){
 
 #ifdef testRecurrentNet
 	std::cout << "Testing recurrent net with test cases" << std::endl;
+	Gummy gummy;
+	char* csvFileName = new char[20];
+	char* netFileName = new char[20];
+	std::cout << "Enter test csv file name (t.csv): ";
+	std::cin.getline(csvFileName, 20);
+	bool fileError = exists(csvFileName);
+	if (!fileError) {
+		std::cout << "File does not exist fatal error, exiting program...";
+		std::cin.get();
+		return 0;
+	}
+	DenseNet* testNet = gummy.userInit(); //This net is recurrent and can be checked by it's type number
+	testNet->printRelations();
 #endif
 	std::cout<<"done and authored by Timothy-Flavin"<<std::endl;
 	std::cin.get();

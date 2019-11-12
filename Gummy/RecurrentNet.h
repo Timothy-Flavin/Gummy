@@ -16,6 +16,8 @@ protected:
 	//one only looks at hidden layer 2 every 4 steps and truncated time = 200 then it should hold up to the layer 2
 	//from 800 timesteps ago
 	int truncatedTime = 0;
+	int numRelations = 0, truncNum = 0;
+	recurrentRelation** relations = nullptr;
 	/*double totalError = 0;
 	char* name = NULL;
 	bool sigmoidOutput = true;
