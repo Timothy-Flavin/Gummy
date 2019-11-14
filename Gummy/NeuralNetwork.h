@@ -9,6 +9,7 @@
 
 class NeuralNetwork {
 protected:
+	int gateType = 1;
 	double totalError = 0;
 	char* name = NULL;
 	bool sigmoidOutput = true;
@@ -24,11 +25,20 @@ protected:
 	double* errorList = NULL;
 	virtual void sigmoid(Matrix* A);
 	virtual double sigmoidPrime(double a);
+	virtual void tanh(Matrix* A);
+	virtual double tanhPrime(double a);
+	virtual void relu(Matrix* A);
+	virtual double reluPrime(double a);
+	virtual void leakyRelu(Matrix* A);
+	virtual double leakyReluPrime(double a);
 	NeuralNetwork();
+	void (NeuralNetwork::*gate)(Matrix*) = &NeuralNetwork::sigmoid;
+	double (NeuralNetwork::*gatePrime)(double) = &NeuralNetwork::sigmoidPrime;
 	//int jerry = 0;
 public:
 	//NeuralNetwork(int nl, int*ll, bool so, char* nm);
 	//NeuralNetwork(csv* file);
+	virtual void setGateType(int);
 	virtual Matrix* feedForward(Matrix* inputs);
 	virtual double calcError(Matrix* A);
 	virtual double getError() { return totalError; }

@@ -8,8 +8,8 @@
 
 class DenseNet : public NeuralNetwork {
 protected:
-	void sigmoid(Matrix* A);
-	double sigmoidPrime(double a);
+	//void sigmoid(Matrix* A);
+	//double sigmoidPrime(double a);
 	DenseNet();
 public:
 	DenseNet(int nl, int*ll, bool so, char* nm);

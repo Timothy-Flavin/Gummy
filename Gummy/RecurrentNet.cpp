@@ -32,7 +32,7 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation*
 		relations[i]->errorMatrixBuffer.construct(layerList[relations[i]->outputLayer], layerList[relations[i]->inputLayer]);
 		relations[i]->weightMatrix.fillRandDouble(-1, 1);
 		std::cout << "Made time weights matrix: "<<i<< std::endl;
-		relations[i]->weightMatrix.print();
+		//relations[i]->weightMatrix.print();
 		activationHistory[i] = new Matrix[truncNum];
 		for (int j = 0; j < truncNum; j++) {
 			activationHistory[i][j].construct(layerList[relations[i]->outputLayer], 1);
@@ -125,6 +125,7 @@ RecurrentNet::RecurrentNet(csv* file) : DenseNet(){
 	}
 }
 Matrix* RecurrentNet::feedForward(Matrix* inputs) {
+
 	return inputs;
 }
 void RecurrentNet::backProp(Matrix* A, double stepSize){

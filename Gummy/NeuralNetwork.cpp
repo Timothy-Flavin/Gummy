@@ -28,12 +28,63 @@ double NeuralNetwork::calcError(Matrix* A) {
 	std::cout << "This is the virtual calcError in NeuralNetwork" << std::endl;
 	return 0.0;
 }
-void NeuralNetwork::sigmoid(Matrix* A) {
+/*void NeuralNetwork::sigmoid(Matrix* A) {
 	std::cout << "This is the virtual sigmoid in NeuralNetwork" << std::endl;
 }
 double NeuralNetwork::sigmoidPrime(double a) {
 	std::cout << "This is the virtual sigmoid prime in NeuralNetwork" << std::endl;
 	return 0.0;
+}*/
+void NeuralNetwork::setGateType(int gateType) {
+	if (gateType == 0) {
+		gate = &NeuralNetwork::sigmoid;
+		gatePrime = &NeuralNetwork::sigmoidPrime;
+	}
+	else if (gateType == 1) {
+		gate = &NeuralNetwork::tanh;
+		gatePrime = &NeuralNetwork::tanhPrime;
+	}
+	else if (gateType == 2) {
+		gate = &NeuralNetwork::relu;
+		gatePrime = &NeuralNetwork::reluPrime;
+	}
+	else if (gateType == 3) {
+		gate = &NeuralNetwork::leakyRelu;
+		gatePrime = &NeuralNetwork::leakyReluPrime;
+	}
+}
+void NeuralNetwork::sigmoid(Matrix* A) {
+	//derivative of sigmoid S() is S()*(1-S())
+	for (int i = 0; i < A->getM(); i++) {
+		A->set(i, 0, 1.0 / (1.0 + exp(-1 * (A->get(i, 0)))));
+	}
+}
+double NeuralNetwork::sigmoidPrime(double a) {
+	return a * (1 - a);
+}
+void NeuralNetwork::tanh(Matrix* A) {
+	for (int i = 0; i < A->getM(); i++) {
+		A->set(i, 0, 2.0 / (1.0 + exp(-2 * (A->get(i, 0))))-1);
+	}
+}
+double NeuralNetwork::tanhPrime(double a) {
+	return 1 - a * a;
+}
+void NeuralNetwork::relu(Matrix* A) {
+	for (int i = 0; i < A->getM(); i++) {
+		A->set(i, 0, A->get(1,0)<0?0:A->get(i,0)); //0 if a negative and 1 if positive
+	}
+}
+double NeuralNetwork::reluPrime(double a) {
+	return a < 0 ? 0 : 1;
+}
+void NeuralNetwork::leakyRelu(Matrix* A) {
+	for (int i = 0; i < A->getM(); i++) {
+		A->set(i, 0, A->get(1, 0)<0 ? 0.01*A->get(i, 0) : A->get(i, 0)); //0 if a negative and 1 if positive
+	}
+}
+double NeuralNetwork::leakyReluPrime(double a) {
+	return a < 0 ? 0.01 : 1;
 }
 void NeuralNetwork::print() {
 	std::cout << "This is virtual print in NeuralNetwork" << std::endl;

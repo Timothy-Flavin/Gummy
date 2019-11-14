@@ -263,15 +263,16 @@ double DenseNet::calcError(Matrix* A) {
 	}
 	return error;
 }
+/*
 void DenseNet::sigmoid(Matrix* A) {
-	//derivative of sigmoid S() is S()*(1-S())
-	for (int i = 0; i < A->getM(); i++) {
-		A->set(i, 0, 1.0/(1.0+exp(-1*(A->get(i, 0)))));
-	}
+//derivative of sigmoid S() is S()*(1-S())
+for (int i = 0; i < A->getM(); i++) {
+A->set(i, 0, 1.0/(1.0+exp(-1*(A->get(i, 0)))));
+}
 }
 double DenseNet::sigmoidPrime(double a) {
-	return a * (1 - a);
-}
+return a * (1 - a);
+}*/
 void DenseNet::print() {
 	std::cout<<"will this print"<<std::endl;
 	std::cout << "\n\n ----------PRINTING A DENSE NET----------"<<std::endl;
