@@ -31,11 +31,13 @@ RecurrentNet::RecurrentNet(int nl, int*ll, bool so, char* nm, recurrentRelation*
 		relations[i]->errorMatrix.construct(layerList[relations[i]->outputLayer], layerList[relations[i]->inputLayer]);
 		relations[i]->errorMatrixBuffer.construct(layerList[relations[i]->outputLayer], layerList[relations[i]->inputLayer]);
 		relations[i]->weightMatrix.fillRandDouble(-1, 1);
+
+		//construct bias matrices
 		std::cout << "Made time weights matrix: "<<i<< std::endl;
 		//relations[i]->weightMatrix.print();
-		activationHistory[i] = new Matrix[truncNum];
+		relations[i]->activationHistory = new Matrix[truncNum];
 		for (int j = 0; j < truncNum; j++) {
-			activationHistory[i][j].construct(layerList[relations[i]->outputLayer], 1);
+			relations[i]->activationHistory[j].construct(layerList[relations[i]->outputLayer], 1);
 		}
 	}
 
@@ -125,7 +127,47 @@ RecurrentNet::RecurrentNet(csv* file) : DenseNet(){
 	}
 }
 Matrix* RecurrentNet::feedForward(Matrix* inputs) {
-
+	/*
+	int numIns = inputs->getM();
+	for (int i = 0; i < numIns; i++) {
+		activations[0].set(i, 0, inputs->get(i, 0));
+	}
+	for (int i = 0; i < numLayers - 1; i++) {
+		weights[i].multiply(&activations[i], &activations[i + 1]);
+		activations[i+1].add(&bias[i], &activations[i+1]);
+		if (!(i == numLayers - 2) || sigmoidOutput) {
+			gate(&activations[i + 1]);
+		}
+	}
+	return &activations[numLayers-1];
+	*/
+	int numIns = inputs->getM();
+	for (int i = 0; i < numIns; i++) {
+		activations[0].set(i, 0, inputs->get(i, 0));
+	}
+	for (int i = 0; i < numLayers - 1; i++) {
+		weights[i].multiply(&activations[i], &activations[i + 1]);
+		activations[i + 1].add(&bias[i], &activations[i + 1]);
+		for (int j = numRelations - 1; j >= 0; j--) {
+			//if a relation has this layer as an output and this timestep is one where it matters, add its hidden layer to this one
+			if (relations[i]->outputLayer == i && relations[i]->timeDistance <= currentTime && currentTime % relations[i]->timeDistance) {
+				/*the relation outputs to this layer, there has eben enough time for a relation to exist, and this time step is one where this relation plays a role
+					we need to multiply the most recent activation saved in this relations activations[] by the relation's weights and then add it's bias
+					then add that to this activations layer
+				*/
+				relations[j]->weightMatrix.multiply(&relations[j]->activationHistory[tailOfTruncatedArray], &relations[j]->mostRecentActivation);
+				//this line should multiply the weight matrix by the activation history's most recent activation and store the result into most recent activation
+				relations[j]->mostRecentActivation.add(&relations[j]->biasMatrix, &relations[j]->mostRecentActivation);
+			}
+			if (relations[i]->outputLayer > i) {
+				j = -1; //exit if we have passed up the relations with output layers less than the current layer
+			}
+		}
+		if (!(i == numLayers - 2) || sigmoidOutput) {
+			gate(&activations[i + 1]);
+		}
+	}
+	return &activations[numLayers - 1];
 	return inputs;
 }
 void RecurrentNet::backProp(Matrix* A, double stepSize){

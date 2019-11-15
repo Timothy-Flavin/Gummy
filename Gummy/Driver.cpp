@@ -2,8 +2,8 @@
 #include "Timer.h"
 #include<string>
 //#define testMatrix
-#define testDenseNet
-//#define testRecurrentNet
+//#define testDenseNet
+#define testRecurrentNet
 inline bool exists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);

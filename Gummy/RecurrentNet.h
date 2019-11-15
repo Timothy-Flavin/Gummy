@@ -16,7 +16,7 @@ protected:
 	//also if a hidden layer is used only every 'x' number of times it should hold truncated number of those so if 
 	//one only looks at hidden layer 2 every 4 steps and truncated time = 200 then it should hold up to the layer 2
 	//from 800 timesteps ago
-	int truncatedTime = 0;
+	int truncatedTime = 0, currentTime = 0, tailOfTruncatedArray = 0;
 	int numRelations = 0, truncNum = 0;
 	recurrentRelation** relations = nullptr;
 	/*double totalError = 0;
