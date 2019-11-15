@@ -23,17 +23,17 @@ protected:
 	Matrix* eBiasBuffer = NULL;
 	Matrix* eActivation = NULL;
 	double* errorList = NULL;
-	virtual void sigmoid(Matrix* A);
-	virtual double sigmoidPrime(double a);
-	virtual void tanh(Matrix* A);
-	virtual double tanhPrime(double a);
-	virtual void relu(Matrix* A);
-	virtual double reluPrime(double a);
-	virtual void leakyRelu(Matrix* A);
-	virtual double leakyReluPrime(double a);
+	static void sigmoid(Matrix* A);
+	static double sigmoidPrime(double a);
+	static void tanh(Matrix* A);
+	static double tanhPrime(double a);
+	static void relu(Matrix* A);
+	static double reluPrime(double a);
+	static void leakyRelu(Matrix* A);
+	static double leakyReluPrime(double a);
 	NeuralNetwork();
-	void (NeuralNetwork::*gate)(Matrix*) = &NeuralNetwork::sigmoid;
-	double (NeuralNetwork::*gatePrime)(double) = &NeuralNetwork::sigmoidPrime;
+	void (*gate)(Matrix*)=&tanh;// = &NeuralNetwork::sigmoid;
+	double (*gatePrime)(double)=&tanhPrime;// = &NeuralNetwork::sigmoidPrime;
 	//int jerry = 0;
 public:
 	//NeuralNetwork(int nl, int*ll, bool so, char* nm);

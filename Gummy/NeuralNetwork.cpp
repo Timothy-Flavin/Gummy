@@ -37,20 +37,20 @@ double NeuralNetwork::sigmoidPrime(double a) {
 }*/
 void NeuralNetwork::setGateType(int gateType) {
 	if (gateType == 0) {
-		gate = &NeuralNetwork::sigmoid;
-		gatePrime = &NeuralNetwork::sigmoidPrime;
+		gate = &sigmoid;
+		gatePrime = &sigmoidPrime;
 	}
 	else if (gateType == 1) {
-		gate = &NeuralNetwork::tanh;
-		gatePrime = &NeuralNetwork::tanhPrime;
+		gate = &tanh;
+		gatePrime = &tanhPrime;
 	}
 	else if (gateType == 2) {
-		gate = &NeuralNetwork::relu;
-		gatePrime = &NeuralNetwork::reluPrime;
+		gate = &relu;
+		gatePrime = &reluPrime;
 	}
 	else if (gateType == 3) {
-		gate = &NeuralNetwork::leakyRelu;
-		gatePrime = &NeuralNetwork::leakyReluPrime;
+		gate = &leakyRelu;
+		gatePrime = &leakyReluPrime;
 	}
 }
 void NeuralNetwork::sigmoid(Matrix* A) {
@@ -63,6 +63,7 @@ double NeuralNetwork::sigmoidPrime(double a) {
 	return a * (1 - a);
 }
 void NeuralNetwork::tanh(Matrix* A) {
+	//std::cout << "tanh bitch" << std::endl;
 	for (int i = 0; i < A->getM(); i++) {
 		A->set(i, 0, 2.0 / (1.0 + exp(-2 * (A->get(i, 0))))-1);
 	}
@@ -80,11 +81,11 @@ double NeuralNetwork::reluPrime(double a) {
 }
 void NeuralNetwork::leakyRelu(Matrix* A) {
 	for (int i = 0; i < A->getM(); i++) {
-		A->set(i, 0, A->get(1, 0)<0 ? 0.01*A->get(i, 0) : A->get(i, 0)); //0 if a negative and 1 if positive
+		A->set(i, 0, A->get(1, 0)<0 ? 0.001*A->get(i, 0) : A->get(i, 0)); //0 if a negative and 1 if positive
 	}
 }
 double NeuralNetwork::leakyReluPrime(double a) {
-	return a < 0 ? 0.01 : 1;
+	return a < 0 ? 0.001 : 1;
 }
 void NeuralNetwork::print() {
 	std::cout << "This is virtual print in NeuralNetwork" << std::endl;

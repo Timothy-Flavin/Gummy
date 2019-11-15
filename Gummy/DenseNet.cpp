@@ -104,7 +104,7 @@ Matrix* DenseNet::feedForward(Matrix* inputs) {
 		weights[i].multiply(&activations[i], &activations[i + 1]);
 		activations[i+1].add(&bias[i], &activations[i+1]);
 		if (!(i == numLayers - 2) || sigmoidOutput) {
-			sigmoid(&activations[i + 1]);
+			gate(&activations[i + 1]);
 		}
 	}
 	return &activations[numLayers-1];
@@ -115,7 +115,7 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 	/*
 	1: set last row of eActivations through calcError
 	Loop for num layers{
-	2: set ebias with inverseSigmoid(activations[i]) * eActivation[i]
+	2: set ebias with inversegate(activations[i]) * eActivation[i]
 	3: set each w[i] by corrisponding ebias[i]*activations[i] (row before the weights row)
 	4: set next eActivations via transpose multiply weights[i]*activations[i+1]
 	}
@@ -141,7 +141,7 @@ void DenseNet::backProp(Matrix* A, double stepSize) {
 				//make temp eBias then use it to set activations
 			}
 			else {
-				eBiasBuffer[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)*sigmoidPrime(activations[curLayer + 1].get(i, 0)));
+				eBiasBuffer[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)*gatePrime(activations[curLayer + 1].get(i, 0)));
 				//std::cout << "before add sigmoid" << std::endl;
 			}
 			
@@ -206,7 +206,7 @@ void DenseNet::backPropOld(Matrix* A, double stepSize) {
 	/*
 	1: set last row of eActivations through calcError
 	Loop for num layers{
-	2: set ebias with inverseSigmoid(activations[i]) * eActivation[i]
+	2: set ebias with inversegate(activations[i]) * eActivation[i]
 	3: set each w[i] by corrisponding ebias[i]*activations[i] (row before the weights row)
 	4: set next eActivations via transpose multiply weights[i]*activations[i+1]
 	}
@@ -225,7 +225,7 @@ void DenseNet::backPropOld(Matrix* A, double stepSize) {
 				eBias[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0));
 			}
 			else {
-				eBias[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)*sigmoidPrime(activations[curLayer + 1].get(i, 0)));
+				eBias[curLayer].set(i, 0, eActivation[curLayer + 1].get(i, 0)*gatePrime(activations[curLayer + 1].get(i, 0)));
 			}
 		}
 		//eBias[curLayer].print();
@@ -264,13 +264,13 @@ double DenseNet::calcError(Matrix* A) {
 	return error;
 }
 /*
-void DenseNet::sigmoid(Matrix* A) {
+void DenseNet::gate(Matrix* A) {
 //derivative of sigmoid S() is S()*(1-S())
 for (int i = 0; i < A->getM(); i++) {
 A->set(i, 0, 1.0/(1.0+exp(-1*(A->get(i, 0)))));
 }
 }
-double DenseNet::sigmoidPrime(double a) {
+double DenseNet::gatePrime(double a) {
 return a * (1 - a);
 }*/
 void DenseNet::print() {
